@@ -221,7 +221,6 @@ private:
 	bool		_outputs_initialized{false};
 
 	perf_counter_t	_cycle_perf;
-	perf_counter_t	_cycle_interval_perf;
 
 	void		capture_callback(uint32_t chan_index,
 					 hrt_abstime edge_time, uint32_t edge_state, uint32_t overflow);
@@ -248,8 +247,7 @@ px4::atomic_bool DShotOutput::_request_telemetry_init{false};
 DShotOutput::DShotOutput() :
 	CDev("/dev/dshot"),
 	OutputModuleInterface(MODULE_NAME, px4::wq_configurations::hp_default),
-	_cycle_perf(perf_alloc(PC_ELAPSED, "dshot: cycle")),
-	_cycle_interval_perf(perf_alloc(PC_INTERVAL, "dshot: cycle interval"))
+	_cycle_perf(perf_alloc(PC_ELAPSED, MODULE_NAME": cycle"))
 {
 	_mixing_output.setAllDisarmedValues(0);
 	_mixing_output.setAllMinValues(1);
@@ -266,7 +264,6 @@ DShotOutput::~DShotOutput()
 	unregister_class_devname(PWM_OUTPUT_BASE_DEVICE_PATH, _class_instance);
 
 	perf_free(_cycle_perf);
-	perf_free(_cycle_interval_perf);
 	delete _telemetry;
 }
 
@@ -748,7 +745,6 @@ DShotOutput::Run()
 	}
 
 	perf_begin(_cycle_perf);
-	perf_count(_cycle_interval_perf);
 
 	_mixing_output.update();
 
@@ -1659,7 +1655,6 @@ int DShotOutput::print_status()
 	PX4_INFO("Outputs initialized: %s", _outputs_initialized ? "yes" : "no");
 	PX4_INFO("Outputs on: %s", _outputs_on ? "yes" : "no");
 	perf_print_counter(_cycle_perf);
-	perf_print_counter(_cycle_interval_perf);
 	_mixing_output.printStatus();
 	if (_telemetry) {
 		PX4_INFO("telemetry on: %s", _telemetry_device);
