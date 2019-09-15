@@ -51,13 +51,14 @@ px4_add_board(
 		dataman
 		ekf2
 		events
-		rover_pos_control
 		land_detector
 		load_mon
 		logger
 		mavlink
 		navigator
+		rover_pos_control
 		sensors
+		temperature_compensation
 		vmount
 
 	SYSTEMCMDS
