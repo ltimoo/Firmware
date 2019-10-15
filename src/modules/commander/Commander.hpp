@@ -153,7 +153,10 @@ private:
 		(ParamInt<px4::params::CBRK_ENGINEFAIL>) _param_cbrk_enginefail,
 		(ParamInt<px4::params::CBRK_GPSFAIL>) _param_cbrk_gpsfail,
 		(ParamInt<px4::params::CBRK_FLIGHTTERM>) _param_cbrk_flightterm,
-		(ParamInt<px4::params::CBRK_VELPOSERR>) _param_cbrk_velposerr
+		(ParamInt<px4::params::CBRK_VELPOSERR>) _param_cbrk_velposerr,
+		
+		(ParamInt<px4::params::COM_ARM_WO_OBLOG>) _param_com_arm_wo_ob_logger
+
 	)
 
 	enum class PrearmedMode {
@@ -248,6 +251,29 @@ private:
 	uORB::Subscription _telemetry_status_sub{ORB_ID(telemetry_status)};
 
 	hrt_abstime	_datalink_last_heartbeat_gcs{0};
+
+	struct OnboardHeartBeatMonitor {
+
+		OnboardHeartBeatMonitor(uint8_t component_id, const char *name) :
+			hb_name(name),
+			hb_component_id(component_id)
+		{}
+
+		const char *hb_name;
+		hrt_abstime	datalink_last_heartbeat{0};
+		bool				system_lost{false};
+		bool		system_status_change{false};
+		uint8_t	datalink_last_status{telemetry_status_s::MAV_STATE_UNINIT};
+		bool print_msg_once{true};
+		uint8_t hb_component_id;
+
+	} _avoidance{telemetry_status_s::COMPONENT_ID_OBSTACLE_AVOIDANCE, "avoidance"},
+	_logger{telemetry_status_s::COMPONENT_ID_LOG, "logger"};
+
+	void update_onboard_system_state(OnboardHeartBeatMonitor &monitor, bool &status_flag_system_valid,
+					 bool &status_changed);
+	void process_onboard_system_heartbeat(OnboardHeartBeatMonitor &monitor, bool &status_flag_system_valid,
+					      bool &status_changed, telemetry_status_s &telemetry);
 
 	hrt_abstime	_datalink_last_heartbeat_onboard_controller{0};
 	bool 				_onboard_controller_lost{false};
