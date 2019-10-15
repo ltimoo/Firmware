@@ -154,7 +154,7 @@ private:
 		(ParamInt<px4::params::CBRK_GPSFAIL>) _param_cbrk_gpsfail,
 		(ParamInt<px4::params::CBRK_FLIGHTTERM>) _param_cbrk_flightterm,
 		(ParamInt<px4::params::CBRK_VELPOSERR>) _param_cbrk_velposerr,
-		
+
 		(ParamInt<px4::params::COM_ARM_WO_OBLOG>) _param_com_arm_wo_ob_logger
 
 	)
@@ -279,10 +279,6 @@ private:
 	bool 				_onboard_controller_lost{false};
 
 	hrt_abstime	_datalink_last_heartbeat_avoidance_system{0};
-	bool				_avoidance_system_lost{false};
-
-	bool		_avoidance_system_status_change{false};
-	uint8_t	_datalink_last_status_avoidance_system{telemetry_status_s::MAV_STATE_UNINIT};
 
 	uORB::Subscription _iridiumsbd_status_sub{ORB_ID(iridiumsbd_status)};
 
