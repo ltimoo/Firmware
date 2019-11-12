@@ -12,7 +12,7 @@
         "ms-vscode.cpptools",
         "twxs.cmake",
         "uavcan.dsdl",
-        "vector-of-bool.cmake-tools",
+        "ms-vscode.cmake-tools",
         "wholroyd.jinja",
         "zixuanwang.linkerscript"
     ]
